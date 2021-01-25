@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+:openvpnserver => {
+        :box_name => "centos/7",
+        :net => [
+                   {ip: '172.16.0.1', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "inet"},
+                   {ip: '192.168.1.1', adapter: 3, netmask: "255.255.255.248", virtualbox__intnet: "localnet1"},
+                ]
+  },
+
+:openvpnclient => {
+        :box_name => "centos/7",
+        :net => [
+                   {ip: '172.16.0.2', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "inet"},
+                   {ip: '192.168.2.1', adapter: 3, netmask: "255.255.255.248", virtualbox__intnet: "localnet2"},
+                ]
+  }
+  
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.define boxname do |box|
+
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
+
+        boxconfig[:net].each do |ipconf|
+          box.vm.network "private_network", ipconf
+        end
+        
+        if boxconfig.key?(:public)
+          box.vm.network "public_network", boxconfig[:public]
+        end
+
+        box.vm.provision "shell", inline: <<-SHELL
+          mkdir -p ~root/.ssh
+                cp ~vagrant/.ssh/auth* ~root/.ssh
+        SHELL
+        
+        case boxname.to_s
+        when "openvpnserver"
+          box.vm.provision "shell", path: "tun_files/openvpnserver_tun.sh"
+        when "openvpnclient"
+          box.vm.provision "shell", path: "tun_files/openvpnclient_tun.sh"
+        end
+
+      end
+
+  end
+  
+  
+end
