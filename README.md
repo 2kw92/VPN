@@ -119,6 +119,7 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 100
 для того чтобы открыть необходимы мосты, использовали скрипт br.sh          
 После поднятия необходимых мостов заходим на сервер openvpnserver и там выполняем:           
 [root@openvpnserver ~]# ip a
+```
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -151,7 +152,7 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 100
        valid_lft forever preferred_lft forever
     inet6 fe80::a00:27ff:fee6:ef57/64 scope link
        valid_lft forever preferred_lft forever
-
+```        
 Убеждаемся что все ок и tap режим доступен.        
 После этого заходим на openvpnclient  и там проверяем:          
 ```
@@ -200,9 +201,11 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 100
 
 Для того чтобы поднять RAS на базе OpenVPN мы испоьзуем тот же алгоритм        
 чтои в первой части задания только нужно пробросить порт 1194 в виртуальную машину.        
-Файл называется Vagrantfile_ras. После его поднятия поднимается сервер с необходимыми       
+Файл называется Vagrantfile_ras.Копируем нужный нам Vagrantfile в корневую директрию из директивы Vagrantfiles       
+Переименовывам в  Vagrantfile и  запускаем     
+После его поднятия поднимается сервер с необходимыми       
 настройками. Так как и у меня клиент на Винде, то Скачиваем официальную версию бинарных файлов        
-OpenVPN Community Edition с графическим интерфейсом управления.
+OpenVPN Community Edition с графическим интерфейсом управления.        
 И и ипортируем конфиг из репы ras_files/client.ovpn. После этого подключаемся и вот мой лог:         
 
 ```
